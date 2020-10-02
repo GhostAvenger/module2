@@ -1,9 +1,11 @@
 #!/bin/bash -x
 TODOHOME=/home/todoapp
 APP=/home/todoapp/app
+set -ue
 
 sudo bash -c "
 echo Cloning from github ACIT4640 todo app
+rm -r ${APP}
 git clone https://github.com/timoguic/ACIT4640-todo-app.git ${APP}
 
 echo Updating database.js
@@ -28,7 +30,7 @@ cp ${TODOHOME}/setup/mongodb-org-4.4.repo /etc/yum.repos.d
 dnf install -y mongodb-org
 
 echo Starting mongodb service
-systemctl enable mongd
+systemctl enable mongod
 systemctl start mongod
 
 echo Setting up todoapp service
@@ -53,7 +55,7 @@ systemctl start nginx
 
 echo Changing Firewall
 firewall-cmd --zone=public --add-port=8080/tcp
-firewall-cmd --zone=public --add-port=http
+firewall-cmd --zone=public --add-port=80/tcp
 firewall-cmd --runtime-to-permanent
 
 echo Ensuring correct file permissions
